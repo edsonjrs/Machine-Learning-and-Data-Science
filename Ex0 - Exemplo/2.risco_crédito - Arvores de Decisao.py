@@ -15,20 +15,22 @@ previsores[:, 2] = labelencoder.fit_transform(previsores[:, 2])
 previsores[:, 3] = labelencoder.fit_transform(previsores[:, 3])
 
 # Implementação do algoritmo NaiveBayes
-from sklearn.naive_bayes import GaussianNB
-classificador = GaussianNB()
+from sklearn.tree import DecisionTreeClassifier, export
+classificador = DecisionTreeClassifier(criterion = "entropy")
 classificador.fit(previsores,classe)
+
+# Mostrar os atributos mais importantes
+print(classificador.feature_importances_)
+
+# Exportar para op graphviz, para visualizar a árvore de decisão
+export.export_graphviz( classificador,
+                        out_file = "2.arvore.dot", 
+                        feature_names = ['historia', 'divida', 'garantia', 'renda'],
+                        class_names = ['alto', 'moderado', 'baixa'],
+                        filled = True,
+                        leaves_parallel = True)
 
 # Teste1: história boa, dívida alta, garantias nenhuma, renda > 35
 print(classificador.predict([[0,0,1,2]]))
 # Teste2: história ruim, dívida alta, garantias adequada, renda < 15
 print(classificador.predict([[3,0,0,0]]))
-
-# Mostrar os tipo de classes
-print(classificador.classes_)
-
-# Quantidade de valores por classe
-print(classificador.class_count_)
-
-# Probabildiade de cada classe
-print(classificador.class_prior_)
